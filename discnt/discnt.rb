@@ -46,8 +46,9 @@ class DiscountProcessor
 
     left_sum = array[0...(array_length - ops_num)].reduce(&:+)
 
-    right_sum = array[(array_length - ops_num )...array_length].inject do |el, memo| 
-      memo += el.to_f * @percentage_without_discount
+    right_sum = array[(array_length - ops_num )...array_length].inject(0) do |memo, el| 
+      memo += el.to_i * @percentage_without_discount
+      memo
     end
 
     left_sum + right_sum
