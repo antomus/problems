@@ -26,18 +26,29 @@ class DiscountProcessor
     [data[0].split.map(&:to_i), data[1].to_f / 100]
   end
 
-  def calculate_discount
-    arr = @input_array.sort
+  def insertion_sort(array)
 
-    arr.each_with_index do |el, i|
+    array.each_with_index do |el, i|
+      while i > 0 and el < array[i - 1] do
+        array[i - 1], array[i] = array[i], array[i - 1]
+        i -= 1
+      end
+    end
+    
+    array
+  end
+
+  def calculate_discount
+    array = insertion_sort(@input_array)
+
+    array.each_with_index do |el, i|
       if i > 0 && i % 3 == 0
-        tmp = arr[i]
-        arr[i] = arr.pop * @discount
-        arr.unshift tmp
+        array[i] = array.pop * @discount
+        array.unshift el
       end
     end
 
-    arr.reduce(:+)
+    array.reduce(:+)
   end
 end
 
