@@ -10,7 +10,7 @@ class DiscountProcessor
 
   def execute
     File.open(@output_file, "w") do |file| 
-      file.puts calculate_discount 
+      file.puts '%.02f' % calculate_discount 
     end
   end
 
@@ -23,7 +23,7 @@ class DiscountProcessor
 
     data = data.map(&:chomp)
 
-    [data[0].split.map(&:to_i), ((100 - data[1].to_f) / 100)]
+    [data[0].split.map(&:to_f), ((100.0 - data[1].to_f).round / 100.0)]
   end
 
   def insertion_sort(array)
@@ -40,15 +40,17 @@ class DiscountProcessor
 
   def calculate_discount
     array = insertion_sort(@input_array)
+    array_length = array.length
 
-    array.each_with_index do |el, i|
-      if i > 0 && i % 3 == 0
-        array[i] = array.pop * @percentage_without_discount
-        array.unshift el
-      end
+    ops_num = array.length / 3
+
+    left_sum = array[0...(array_length - ops_num)].reduce(&:+)
+
+    right_sum = array[(array_length - ops_num )...array_length].inject do |el, memo| 
+      memo += el.to_f * @percentage_without_discount
     end
 
-    array.reduce(:+)
+    left_sum + right_sum
   end
 end
 
