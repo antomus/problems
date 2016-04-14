@@ -5,7 +5,7 @@ class DiscountProcessor
   def initialize(input_file, output_file)
     @input_file = input_file || "discnt.in"
     @output_file = output_file || "discnt.out" 
-    @input_array, @discount = read_input_data
+    @input_array, @percentage_without_discount = read_input_data
   end
 
   def execute
@@ -23,7 +23,7 @@ class DiscountProcessor
 
     data = data.map(&:chomp)
 
-    [data[0].split.map(&:to_i), data[1].to_f / 100]
+    [data[0].split.map(&:to_i), ((100 - data[1].to_f) / 100)]
   end
 
   def insertion_sort(array)
@@ -43,7 +43,7 @@ class DiscountProcessor
 
     array.each_with_index do |el, i|
       if i > 0 && i % 3 == 0
-        array[i] = array.pop * @discount
+        array[i] = array.pop * @percentage_without_discount
         array.unshift el
       end
     end
