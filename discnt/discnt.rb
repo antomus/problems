@@ -12,21 +12,19 @@ class DiscountProcessor
   end
 
   def execute
-    File.open(@output_file, "w") do |file| 
-      file.puts '%.02f' % calculate_discount 
-    end
+    IO.write( @output_file, ('%.02f' % calculate_discount) )
   end
 
   private
 
   def read_input_data
-    data = File.readlines(@input_file)
+    data = []
+
+    IO.foreach(@input_file) { |line| data << line.chomp }
 
     raise "Input file should contain 2 lines" if data.length != 2
 
-    data = data.map(&:chomp)
-
-    [data[0].split.map(&:to_f), ((100.0 - data[1].to_f).round / 100.0)]
+    [data[0].split.map! { |n| n.to_f }, ((100.0 - data[1].to_f) / 100.0)]
   end
 
   def insertion_sort(array)
