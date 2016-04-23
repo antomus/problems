@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
+require_relative "quick_sort"
+
 class DiscountProcessor
+  include QuickSort
 
   def initialize(input_file, output_file)
     @input_file = input_file || "discnt.in"
@@ -39,7 +42,7 @@ class DiscountProcessor
   end
 
   def calculate_discount
-    array = insertion_sort(@input_array)
+    array = quick_sort(@input_array)
     array_length = array.length
 
     ops_num = array.length / 3
