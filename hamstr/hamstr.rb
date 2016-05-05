@@ -22,8 +22,15 @@ class HamsterCountProcessor
     private
 
     def read_input_data
-      data = IO.read(@input_file).chomp
-      data.split.map! { |n| n.to_i }
+      data = []
+
+      IO.foreach(@input_file) { |line| data << line.chomp }
+
+      raise "Input file should contain 2 lines" if data.length != 2
+      food_for_day = data[0].to_i
+      hamsters_count = data[1].to_i
+
+      [food_for_day, hamsters_count, data.slice(2, a.length - 1).split]
     end
 
   end
