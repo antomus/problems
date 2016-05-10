@@ -27,18 +27,6 @@ class DiscountProcessor
     [data[0].split.map! { |n| n.to_f }, ((100.0 - data[1].to_f) / 100.0)]
   end
 
-  def insertion_sort(array)
-
-    array.each_with_index do |el, i|
-      while i > 0 and el < array[i - 1] do
-        array[i - 1], array[i] = array[i], array[i - 1]
-        i -= 1
-      end
-    end
-    
-    array
-  end
-
   def calculate_discount
     array = quick_sort(@input_array)
     array_length = array.length
