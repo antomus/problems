@@ -21,32 +21,23 @@ class LongPokerProcessor
     def longest_sequence_length
       input_length = @input_array.length
       data = quick_sort(@input_array)
-      # puts data.inspect
       data.delete(0)
+      # puts data.length
+      # puts input_length
+      # return
+      return input_length if data.empty?
+
       data_length = data.length
       zeros_count = input_length - data_length
       data = data.uniq
       data_range = sequence_range(data.first, data.last, zeros_count)
       sequences = generate_sequences(data_range, input_length)
-      puts sequences.inspect
-      matching_sequences = find_matching_sequences(sequences, data)
-      puts matching_sequences.inspect
-      longest_length = max_sequence_length(matching_sequences)
-      # puts longest_length + zeros_count
-      longest_length + zeros_count
+      matching_sequences = find_matching_sequences(sequences, data, zeros_count)
+      #puts matching_sequences.inspect
+      max_sequence_length(matching_sequences)
     end
 
     private
-
-    def numbers_missing_for_sequence?(array)
-      all_numbers = (array.first..array.last).to_a
-      all_numbers - array
-    end
-
-    def is_sequence?(array)
-      retrun false if array.length == 0
-      numbers_missing_for_sequence?(array).length == 0
-    end
 
     def max_sequence_length(array)
       max = 0
@@ -61,22 +52,19 @@ class LongPokerProcessor
       max
     end
 
-    def find_matching_sequences(sequences, data)
-      result = []
-      data_length = data.length
-
-      data.each_with_index do |_, i|
-        result << sequences.find_all { |seq| seq - data[i..data_length] }
-      end
-
-      result
+    def find_matching_sequences(sequences, data, zeros_count)
+      sequences.find_all { |seq| (seq - data).length <= zeros_count }
     end
 
-    def generate_sequences(data_range, data_length)
-      (1..data_length).to_a.inject([]) do |mem, num|
-        mem += data_range.each_cons(num).to_a
-        mem
-      end
+    def generate_sequences(data_range, input_length)
+      array = data_range.to_a
+      array_length = array.length
+      # puts array_length
+      (0...array_length).map do |i|
+        (i...array_length).map do |j|
+          array[i..j]
+        end
+      end.flatten(1).find_all { |seq| seq.length <= input_length }
     end
 
     def sequence_range(min, max, zeros_count)
