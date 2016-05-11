@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/index"
+require_relative "lib/index"
 
 class HamsterCountProcessor
   include InsertionSort
