@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/index"
+require_relative "lib/index"
 
 class LongPokerProcessor
   include QuickSort
@@ -40,7 +40,7 @@ class LongPokerProcessor
     private
 
     def max_sequence_length(array)
-      max = 0
+      max = MIN_NUM
 
       array.each do |el|
         el_length = el.length
@@ -60,16 +60,29 @@ class LongPokerProcessor
       array = data_range.to_a
       array_length = array.length
       # puts array_length
-      (0...array_length).map do |i|
-        (i...array_length).map do |j|
-          array[i..j]
+      i = 0
+      res = []
+
+      while i < array_length
+        j = i
+        while j < array_length
+          seq = array[i..j]
+          res << seq if seq.length <= input_length
+          j += 1
         end
-      end.flatten(1).find_all { |seq| seq.length <= input_length }
+         i +=1
+      end
+
+      res
     end
 
     def sequence_range(min, max, zeros_count)
-      left = (min - zeros_count) > MIN_NUM ? min - zeros_count : MIN_NUM
-      right = (max + zeros_count) < MAX_NUM ? max + zeros_count : MAX_NUM
+      tmp_left = min - zeros_count
+      tmp_right = max + zeros_count
+
+      left = tmp_left > MIN_NUM ? tmp_left : MIN_NUM
+      right = tmp_right < MAX_NUM ? tmp_right : MAX_NUM
+
       (left..right)
     end
 

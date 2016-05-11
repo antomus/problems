@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/quick_sort"
+require_relative "lib/quick_sort"
 
 class DiscountProcessor
   include QuickSort
