@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative "lib/index"
+#require "pp"
 
 class LongPokerProcessor
   include QuickSort
@@ -22,73 +23,79 @@ class LongPokerProcessor
       input_length = @input_array.length
       data = quick_sort(@input_array)
       data.delete(0)
-      # puts data.length
-      # puts input_length
-      # return
+      # puts data.inspect
+      # puts @input_array.inspect
       return input_length if data.empty?
 
       data_length = data.length
       zeros_count = input_length - data_length
       data = data.uniq
-      data_range = sequence_range(data.first, data.last, zeros_count)
-      sequences = generate_sequences(data_range, input_length)
-      matching_sequences = find_matching_sequences(sequences, data, zeros_count)
-      #puts matching_sequences.inspect
-      max_sequence_length(matching_sequences)
+
+      find_max_sequence(data, zeros_count)
+      #puts matching_sequences
+      #max_sequence_length(matching_sequences)
     end
 
     private
 
-    def max_sequence_length(array)
+    def find_max_sequence(data, zeros_count)
+      data_length = data.length
+      i = 0
+      j = 0
+      # k = data_length - 1
+      # l = 1
       max = MIN_NUM
 
-      array.each do |el|
-        el_length = el.length
-        if max < el_length
-          max = el_length
-        end
-      end
+      while i < data_length
+        while j < data_length
+          seq_length = (data[j] - data[i]).abs
+          # puts i
+          # puts j
+          # puts seq.inspect
+          # puts seq_length
+          sub_length = seq_length - data[i..j].length
+          # puts sub_length
 
-      max
-    end
+          if seq_length > 0 and (sub_length == 0 || sub_length <= zeros_count) 
+            el = (seq_length + (zeros_count - sub_length))
 
-    def find_matching_sequences(sequences, data, zeros_count)
-      sequences.find_all { |seq| (seq - data).length <= zeros_count }
-    end
+            if max < el
+              max = el
+            end
+          end
 
-    def generate_sequences(data_range, input_length)
-      array = data_range.to_a
-      array_length = array.length
-      # puts array_length
-      i = 0
-      res = []
-
-      while i < array_length
-        j = i
-        while j < array_length
-          seq = array[i..j]
-          res << seq if seq.length <= input_length
           j += 1
         end
-         i +=1
+        i +=1
+        j = 1
       end
 
-      res
-    end
+      # while k > 1
+      #   while l < data_length
+      #     seq = (data[l]..data[k]).to_a
+      #     # puts i
+      #     # puts j
+      #     # puts seq.inspect
+      #     sub = seq - data[l..k]
+      #     #puts sub.inspect
+      #     sub_length = sub.length
 
-    def sequence_range(min, max, zeros_count)
-      tmp_left = min - zeros_count
-      tmp_right = max + zeros_count
+      #     if seq.length > 0 and (sub_length == 0 || sub_length <= zeros_count)
+      #       sequences << seq
+      #     end
 
-      left = tmp_left > MIN_NUM ? tmp_left : MIN_NUM
-      right = tmp_right < MAX_NUM ? tmp_right : MAX_NUM
-
-      (left..right)
+      #     l += 1
+      #   end
+      #   k -=1
+      #   j = 1
+      # end
+      max
     end
 
     def read_input_data
       data = IO.read(@input_file).chomp
-
+      # puts @input_file
+      # puts data.inspect
       raise "Input file cannont be empty" if data.empty?
 
       data.split.map! { |n| n.to_i }
