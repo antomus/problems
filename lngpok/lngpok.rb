@@ -40,56 +40,47 @@ class LongPokerProcessor
 
     def find_max_sequence(data, zeros_count)
       data_length = data.length
-      i = 0
-      j = 0
-      # k = data_length - 1
-      # l = 1
+      left_bound = 0
+      right_bound = data_length - 1
+      mid = data_length / 2
+      el = 0
+
       max = MIN_NUM
 
-      while i < data_length
-        while j < data_length
-          seq_length = (data[j] - data[i]).abs
-          # puts i
-          # puts j
-          # puts seq.inspect
-          # puts seq_length
-          sub_length = seq_length - data[i..j].length
-          # puts sub_length
+      while left_bound >= 0 && left_bound < mid
 
-          if seq_length > 0 and (sub_length == 0 || sub_length <= zeros_count) 
-            el = (seq_length + (zeros_count - sub_length))
 
-            if max < el
-              max = el
-            end
-          end
+ 
 
-          j += 1
+        seq_length = (data[mid] - data[left_bound]).abs + 1
+        sub_length = seq_length - data[left_bound..mid].length
+        el = (seq_length + (zeros_count - sub_length)) if sub_length <= zeros_count
+        puts data.inspect
+        puts "data[mid] #{data[mid]}"
+        puts "data[left_bound] #{data[left_bound]}"
+        puts "seq_length #{seq_length}"
+        puts "data[left_bound..mid].length #{data[left_bound..mid].length}"
+        puts "sub_length #{sub_length}"
+        puts "el #{el}"
+        puts "zeros_count #{zeros_count}"
+        puts "left_bound #{left_bound}"
+        puts "right_bound #{right_bound}"
+        puts "mid #{mid}"
+        puts
+
+        if sub_length <= zeros_count
+          left_bound = mid + 1
         end
-        i +=1
-        j = 1
+          
+        if sub_length > zeros_count
+          right_bound = mid - 1
+        end
+
+        mid = left_bound + ( right_bound - left_bound ) / 2
+
       end
 
-      # while k > 1
-      #   while l < data_length
-      #     seq = (data[l]..data[k]).to_a
-      #     # puts i
-      #     # puts j
-      #     # puts seq.inspect
-      #     sub = seq - data[l..k]
-      #     #puts sub.inspect
-      #     sub_length = sub.length
-
-      #     if seq.length > 0 and (sub_length == 0 || sub_length <= zeros_count)
-      #       sequences << seq
-      #     end
-
-      #     l += 1
-      #   end
-      #   k -=1
-      #   j = 1
-      # end
-      max
+      el
     end
 
     def read_input_data
@@ -99,6 +90,39 @@ class LongPokerProcessor
       raise "Input file cannont be empty" if data.empty?
 
       data.split.map! { |n| n.to_i }
+    end
+
+
+    def foo
+      array = [9, 10, 12, 14, 15, 40, 50]
+
+      zeros_count = 2
+      max_max = array.length - 1
+      min_min = 0
+      min = min_min
+      max = max_max
+      el = min_min
+
+      loop do
+        if max > max_max || min < min_min 
+          break
+        end
+
+        guess = (min + max) / 2
+
+        seq_length = (array[guess] - array[min]).abs + 1
+        sub_length = seq_length - array[min..guess].length
+        el = (seq_length + (zeros_count - sub_length)) if sub_length <= zeros_count
+        puts el
+
+        if array[guess] < zeros_count
+          min=guess + 1
+        else
+          max=guess - 1
+        end
+      end
+
+      el
     end
   end
 
