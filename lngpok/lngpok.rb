@@ -39,48 +39,7 @@ class LongPokerProcessor
     private
 
     def find_max_sequence(data, zeros_count)
-      data_length = data.length
-      left_bound = 0
-      right_bound = data_length - 1
-      mid = data_length / 2
-      el = 0
 
-      max = MIN_NUM
-
-      while left_bound >= 0 && left_bound < mid
-
-
- 
-
-        seq_length = (data[mid] - data[left_bound]).abs + 1
-        sub_length = seq_length - data[left_bound..mid].length
-        el = (seq_length + (zeros_count - sub_length)) if sub_length <= zeros_count
-        puts data.inspect
-        puts "data[mid] #{data[mid]}"
-        puts "data[left_bound] #{data[left_bound]}"
-        puts "seq_length #{seq_length}"
-        puts "data[left_bound..mid].length #{data[left_bound..mid].length}"
-        puts "sub_length #{sub_length}"
-        puts "el #{el}"
-        puts "zeros_count #{zeros_count}"
-        puts "left_bound #{left_bound}"
-        puts "right_bound #{right_bound}"
-        puts "mid #{mid}"
-        puts
-
-        if sub_length <= zeros_count
-          left_bound = mid + 1
-        end
-          
-        if sub_length > zeros_count
-          right_bound = mid - 1
-        end
-
-        mid = left_bound + ( right_bound - left_bound ) / 2
-
-      end
-
-      el
     end
 
     def read_input_data
@@ -92,37 +51,53 @@ class LongPokerProcessor
       data.split.map! { |n| n.to_i }
     end
 
+    def get_sequence(data, middle, left)
+      puts "middle #{middle}"
+      seq_length = (data[middle] - data[left]).abs + 1
+      puts "seq_length #{seq_length}"
+      difference = seq_length - data[left..middle].length
+      puts "difference #{difference}"
+      [seq_length, difference]
+    end
 
-    def foo
-      array = [9, 10, 12, 14, 15, 40, 50]
+    def find_max_sequence(data, zeros_count)
+      #find_max_sequence([1,3,5,7,10,15,20], 3))
+      # [9, 10, 12, 14, 15, 40, 50] , 2
 
-      zeros_count = 2
-      max_max = array.length - 1
-      min_min = 0
-      min = min_min
-      max = max_max
-      el = min_min
+      left = 0
+      middle = nil
 
-      loop do
-        if max > max_max || min < min_min 
-          break
+      right = data.length - 1
+
+      while right - left > 1
+        puts "left #{left}"
+        puts "right #{right}"
+        puts "data #{data.inspect}"
+        puts "zeros_count #{zeros_count}"
+
+        guess = left + (right - left) / 2
+
+        middle = guess if middle.nil?
+        seq_length, difference = get_sequence(data, middle, left)
+
+
+        if difference == zeros_count
+          loop do
+            middle = middle + 1
+            seq_length, difference = get_sequence(data, middle, left)
+            return get_sequence(data, middle - 1, left)[0] if difference > zeros_count
+          end
         end
 
-        guess = (min + max) / 2
+        middle = guess
 
-        seq_length = (array[guess] - array[min]).abs + 1
-        sub_length = seq_length - array[min..guess].length
-        el = (seq_length + (zeros_count - sub_length)) if sub_length <= zeros_count
-        puts el
-
-        if array[guess] < zeros_count
-          min=guess + 1
-        else
-          max=guess - 1
+        if difference < zeros_count
+          left = middle
+        elsif difference > zeros_count
+          right = middle
         end
+
       end
-
-      el
     end
   end
 
