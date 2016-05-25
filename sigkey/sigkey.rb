@@ -23,7 +23,7 @@ class SigKeyProcessor
 
       raise "Input file cannont be empty" if data.empty?
 
-      [ data[0].to_i, data[1..data.length] ]
+      [ data[0].to_i, data[1..data.length].map { |key| key.chars.sort } ]
 
     rescue Errno::ENOENT => e
       puts "File #{@input_file} is not found"
