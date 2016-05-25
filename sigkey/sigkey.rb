@@ -12,7 +12,22 @@ class SigKeyProcessor
     end
 
     def key_pairs_number
-      0
+      counter = 0
+      @keys_array.each do |key|
+        @keys_array.delete(key)
+        @keys_array.each do |other_key| 
+          sum_str = (key + other_key).chars.sort
+          next if sum_str[0] != "a"
+          
+          sum_str_length = sum_str.length
+          sequence_length = (sum_str[0]..sum_str[sum_str_length - 1]).to_a.length
+
+          if sequence_length == sum_str_length
+            counter += 1
+          end
+        end
+      end
+      counter
     end
 
     private
@@ -23,7 +38,7 @@ class SigKeyProcessor
 
       raise "Input file cannont be empty" if data.empty?
 
-      [ data[0].to_i, data[1..data.length].map { |key| key.chars.sort } ]
+      [ data[0].to_i, data[1..data.length] ]
 
     rescue Errno::ENOENT => e
       puts "File #{@input_file} is not found"
