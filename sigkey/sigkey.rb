@@ -13,17 +13,27 @@ class SigKeyProcessor
 
     def key_pairs_number
       counter = 0
-      @keys_array.each do |key|
-        @keys_array.delete(key)
-        @keys_array.each do |other_key| 
-          sum_str = (key + other_key).chars.sort
-          next if sum_str[0] != "a"
+      @keys_array.each_with_index do |key,i|
+        #@keys_array.delete(key)
+        @keys_array.each_with_index do |other_key,j|
+          next if @keys_array[i].nil? || @keys_array[j].nil?
+          sum_str = (key + other_key).chars
+          min = sum_str.min
+          max = sum_str.max
+
+          next if !sum_str.include?("a")
           
           sum_str_length = sum_str.length
-          sequence_length = (sum_str[0]..sum_str[sum_str_length - 1]).to_a.length
+          #sequence_length = (sum_str[0]..sum_str[sum_str_length - 1]).to_a.length
+          sequence_length = max.ord - min.ord + 1
+
+          #puts "sum_str_length #{sum_str_length}"
+          #puts "sequence_length #{sequence_length}"
 
           if sequence_length == sum_str_length
             counter += 1
+            @keys_array[i] = nil
+            @keys_array[j] = nil
           end
         end
       end
