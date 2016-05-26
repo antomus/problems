@@ -18,11 +18,9 @@ class SigKeyProcessor
         @keys_array.each_with_index do |other_key,j|
           next if @keys_array[i].nil? || @keys_array[j].nil?
           sum_str = (key + other_key).chars
+          next if !sum_str.include?("a")
           min = sum_str.min
           max = sum_str.max
-
-          next if !sum_str.include?("a")
-          
           sum_str_length = sum_str.length
           #sequence_length = (sum_str[0]..sum_str[sum_str_length - 1]).to_a.length
           sequence_length = max.ord - min.ord + 1
