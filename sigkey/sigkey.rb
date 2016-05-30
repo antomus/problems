@@ -26,31 +26,44 @@ class SigKeyProcessor
 
   def key_pairs_number
     counter = 0
-    @keys_array.each_with_index do |key,i|
-      #@keys_array.delete(key)
-      @keys_array.each_with_index do |other_key,j|
-        next if @keys_array[i].nil? || @keys_array[j].nil?
+    alphabet_sums = @alphabet_sums
+    keys_array = @keys_array
+    keys_array.each_with_index do |_,i|
+      keys_array.each_with_index do |_,j|
 
+        next if keys_array[i] == keys_array[j]
+        sum_str = (keys_array[i] + keys_array[j]).each_byte
 
-        #puts "sum_str_length #{sum_str_length}"
-        #puts "sequence_length #{sequence_length}"
+        min = sum_str.min
+        next if min != 97
 
-        if key_pair?(key, other_key)
+        #max = sum_str.max
+
+        sum_str_length = sum_str.count
+        # puts "sum_str_length #{sum_str_length}"
+        #sequence_length = max.ord - min.ord + 1
+          # puts "sequence_length #{sequence_length}"
+          # puts "sum_str #{sum_str.inspect}"
+
+        pair_sum = sum_str.reduce(&:+)
+        if alphabet_sums[sum_str_length] && alphabet_sums[sum_str_length] == pair_sum
           counter += 1
-          @keys_array[i] = nil
-          @keys_array[j] = nil
+          break
         end
       end
     end
-    counter
+    counter / 2
   end
 
   private
 
   def key_pair?(key, other_key)
-    sum_str = key + other_key
-    pair_sum = sum_str.each_byte.reduce(&:+)
-    @alphabet_sums[sum_str.length] && @alphabet_sums[sum_str.length] == pair_sum
+    return false if key == other_key
+    return false if key.nil? || other_key.nil?
+    sum_str = "#{key}#{other_key}".chars.sort
+    puts sum_str.inspect
+    return false if sum_str.first != "a"
+    (sum_str.first..sum_str.last).to_a == sum_str.length
   end
 
   def read_input_data
